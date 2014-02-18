@@ -1,5 +1,0 @@
-require 'wikipedia'
-page = Wikipedia.find( 'Mark_Wahlberg#Filmography' )
-
-puts page.content[0]
-
