@@ -1,7 +1,15 @@
 require 'wikipedia'
 
 def parser(article)
-  link = article.scan(/\[\[[^\]]+\]\]/)
+  link = []
+  links = article.scan(/\[\[[^\]]+\]\]/)
+  links.each do |value|
+    if(not value =~ /\w+:/)
+      link << (value[2..(value.size()-3)]).gsub(/\|.*/, '')
+    end
+  end
+  link = link.uniq
+  return link
 end
 
 '
@@ -14,3 +22,4 @@ end
 page = Wikipedia.find( 'Getting Things Done' )
 
 parser(page.content)
+
