@@ -1,1 +1,1 @@
-Programme qui permet de croiser des resultats de cinema
+Programme qui permet de croiser des resultats de noms d'articles
