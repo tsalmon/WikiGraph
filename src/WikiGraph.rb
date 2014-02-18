@@ -1,8 +1,11 @@
 require 'wikipedia'
 
-def parser(article)
+#`links` is an array of [[links]] in the article `content`
+# we remove alias of links (foo|bar -> get only foo)
+# we don't get particulars links (like image, url out of wikipedia, etc)
+def parser(content)
   link = []
-  links = article.scan(/\[\[[^\]]+\]\]/)
+  links = content.scan(/\[\[[^\]]+\]\]/)
   links.each do |value|
     if(not value =~ /\w+:/)
       link << (value[2..(value.size()-3)]).gsub(/\|.*/, '')
@@ -12,14 +15,16 @@ def parser(article)
   return link
 end
 
-'
 if(ARGV.length < 1) then
-  puts "Need arguments <actor_1> [... <actor_n>]"
+  puts "Need arguments <article_1> [... <article_n>]"
   exit
 end
-'
 
-page = Wikipedia.find( 'Getting Things Done' )
+common = parser(Wikipedia.find(ARGV[0]).content)
 
-parser(page.content)
+ARGV[1..-1].each do |nom|
+  common = common & (parser(Wikipedia.find(nom).content))
+end
+
+puts common
 
