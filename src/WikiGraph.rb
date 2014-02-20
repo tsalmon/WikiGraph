@@ -21,6 +21,7 @@ def parser(content, name_article)
   link = []
 
   links = content.scan(/\[\[[^\]]+\]\]/)
+
   links.each do |value|
     if(not value =~ /\w+:/)
       link << (value[2..(value.size()-3)]).gsub(/\|.*/, '')
@@ -30,8 +31,9 @@ def parser(content, name_article)
   return link
 end
 
+
 if(ARGV.length < 1) then
-  puts "Need arguments <article_1> [... <article_n>]"
+  puts "Need arguments <actor_1> [... <actor_n>]"
   exit
 else 
   if(internet_connection? == false)
@@ -39,6 +41,7 @@ else
     exit
   end 
 end
+
 
 common = parser(Wikipedia.find(ARGV[0]).content, ARGV[0])
 
