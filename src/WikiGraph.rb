@@ -68,9 +68,66 @@ end
 
 def wikigraph()
 
-
   puts common
 end
+
+
+
+# code operator
+# 1 : or
+# 2 : and
+# 3 : xor
+########
+# op can be a leaf(and so f1, f2 are nils both)
+# or op is operator, and so f1, f2 are formula both
+class Formula 
+  attr :f1, :f2, :op
+  def initialize(op, f1=nil, f2=nil)
+    @op = op
+    @f1 = f1
+    @f2 = f2
+  end 
+
+  def eval()
+    if(@f1 == nil)
+      return parser(Wikipedia.find(@op).content, @op)
+    else      
+      case @op
+        when 1 then
+          return (@f1.eval() | @f2.eval())
+        when 2 then
+          return (@f1.eval() & @f2.eval())
+        when 3 then 
+          return (Set.new(@f1.eval()) ^ Set.new(@f2.eval)).to_a
+        else 
+          puts "unknow symbole"
+          exit
+      end
+    end    
+  end 
+
+  #just for see the expression
+  def getS()
+    case @op
+      when 1 then
+        return "|"
+      when 2 then
+        return "&"
+      when 3 then
+        return "^"
+      else return "???"
+    end
+  end
+
+  def inspect()
+    if(@f1 == nil)
+      return @op
+    else      
+      return "(#{@f1.inspect()} #{getS()} #{@f2.inspect()})"
+    end
+  end
+end
+
 
 #string to int
 #call by: main
@@ -91,5 +148,10 @@ if(ARGV.length < 1)
  exit
 end
 
-print log_xor()
-puts
+def parser_formula(start_arg_article)
+end
+
+#sample:
+#f = Formula.new(1, Formula.new(2, Formula.new("Nantes"), Formula.new("Rennes")), Formula.new("Paris"))
+#print f.eval()
+#puts 
