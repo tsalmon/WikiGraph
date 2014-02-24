@@ -1,5 +1,4 @@
 require 'open-uri'
-require 'wikipedia'
 
 def internet_connection?
   begin
@@ -8,6 +7,13 @@ def internet_connection?
     false
   end
 end
+
+#if(internet_connection? == false)
+#    puts "Not connected"
+#    exit
+#end
+
+require 'wikipedia'
 
 
 #`links` is an array of [[links]] in the article `content`
@@ -31,22 +37,44 @@ def parser(content, name_article)
   return link
 end
 
+def wikigraph(t)
+  common = parser(Wikipedia.find(t[0]).content, ARGV[0])
 
-if(ARGV.length < 1) then
-  puts "Need arguments <actor_1> [... <actor_n>]"
-  exit
-else 
-  if(internet_connection? == false)
-    puts "Not connected"
-    exit
-  end 
+  t[1..-1].each do |name|
+   common = common & (parser(Wikipedia.find(name).content, name))
+  end
+
+  puts common
 end
 
-
-common = parser(Wikipedia.find(ARGV[0]).content, ARGV[0])
-
-ARGV[1..-1].each do |name|
-  common = common & (parser(Wikipedia.find(name).content, name))
+def sti(x)
+  begin
+    return Integer(x)
+  rescue
+    return nil
+  end
 end
 
-puts common
+def arguments()
+  if(ARGV.length < 1)
+   puts "Need arguments <actor_1> [... <actor_n>]"
+   exit
+  end
+
+  r_arg = ARGV[0] =~ /^-[^r]*r[^r]*$/
+  p_arg = ARGV[0] =~ /^-[^p]*p[^p]*$/
+
+  n = sti(ARGV[1])
+
+  if(ARGV[0] =~/[^rp]/)
+    puts "unknow arguments"
+  elsif((ARGV.length < 3 and r_arg != nil) or (r_arg != nil and n == nil))
+    puts("bad arg: -r")
+  elsif(ARGV.length < 2 and p_arg != nil)
+    puts "bad arguments: -p"
+  else
+    puts "arguments ok"
+  end
+end 
+
+arguments()
