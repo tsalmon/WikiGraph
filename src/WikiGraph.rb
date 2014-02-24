@@ -14,7 +14,7 @@ end
 #end
 
 require 'wikipedia'
-
+require 'Set'
 
 #`links` is an array of [[links]] in the article `content`
 # we remove alias of links (foo|bar -> get only foo)
@@ -37,16 +37,45 @@ def parser(content, name_article)
   return link
 end
 
-def wikigraph(t)
-  common = parser(Wikipedia.find(t[0]).content, ARGV[0])
-
-  t[1..-1].each do |name|
+#string to int
+#call by: main
+#back: any
+#give: int or nil
+def log_and()
+  common = parser(Wikipedia.find(ARGV[0]).content, ARGV[0])
+  ARGV[1..-1].each do |name|
    common = common & (parser(Wikipedia.find(name).content, name))
   end
+  return common
+end
+
+def log_or()
+  common = parser(Wikipedia.find(ARGV[0]).content, ARGV[0])
+  ARGV[1..-1].each do |name|
+   common = common | (parser(Wikipedia.find(name).content, name))
+  end
+  return common
+end
+
+def log_xor()
+  common = Set.new(parser(Wikipedia.find(ARGV[0]).content, ARGV[0]))
+  ARGV[1..-1].each do |name|
+   common = common ^ Set.new(parser(Wikipedia.find(name).content, name))
+  end
+  return common.to_a
+end
+
+
+def wikigraph()
+
 
   puts common
 end
 
+#string to int
+#call by: main
+#back: any
+#give: int or nil
 def sti(x)
   begin
     return Integer(x)
@@ -55,26 +84,12 @@ def sti(x)
   end
 end
 
-def arguments()
-  if(ARGV.length < 1)
-   puts "Need arguments <actor_1> [... <actor_n>]"
-   exit
-  end
+#------MAIN---------------------------------------------------------------
 
-  r_arg = ARGV[0] =~ /^-[^r]*r[^r]*$/
-  p_arg = ARGV[0] =~ /^-[^p]*p[^p]*$/
+if(ARGV.length < 1)
+ puts "Need arguments <actor_1> [... <actor_n>]"
+ exit
+end
 
-  n = sti(ARGV[1])
-
-  if(ARGV[0] =~/[^rp]/)
-    puts "unknow arguments"
-  elsif((ARGV.length < 3 and r_arg != nil) or (r_arg != nil and n == nil))
-    puts("bad arg: -r")
-  elsif(ARGV.length < 2 and p_arg != nil)
-    puts "bad arguments: -p"
-  else
-    puts "arguments ok"
-  end
-end 
-
-arguments()
+print log_xor()
+puts
