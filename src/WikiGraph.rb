@@ -128,19 +128,6 @@ class Formula
   end
 end
 
-
-#string to int
-#call by: main
-#back: any
-#give: int or nil
-def sti(x)
-  begin
-    return Integer(x)
-  rescue
-    return nil
-  end
-end
-
 #------MAIN---------------------------------------------------------------
 
 if(ARGV.length < 1)
@@ -152,6 +139,6 @@ def parser_formula(start_arg_article)
 end
 
 #sample:
-#f = Formula.new(1, Formula.new(2, Formula.new("Nantes"), Formula.new("Rennes")), Formula.new("Paris"))
-#print f.eval()
-#puts 
+f = Formula.new(2, Formula.new(2, Formula.new("Nantes"), Formula.new("Rennes")), Formula.new("Paris"))
+print f.eval()
+puts 
